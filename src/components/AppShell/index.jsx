@@ -1,22 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import MainFooter from '../MainFooter';
+import MainHeader from '../MainHeader';
+import MainPopups from '../MainPopups';
 
-import styles from './content.module.sass';
+const AppShell = props => {
+  useEffect(() => {
+    document.querySelector('head style') && document.querySelector('head style').remove();
+    document.body.setAttribute('class', 'body-main');
+  }, []);
 
-import Header from '../Header';
-import Footer from '../Footer';
-
-class AppShell extends React.Component {
-	render() {
-		return (
-			<div className="page-wrapper">
-				<Header/>
-				<main className={styles.content}>
-					{this.props.children}
-				</main>
-				<Footer/>
+  return (<>
+    <div className="page">
+			<div className="page__header">
+        <MainHeader />
 			</div>
-		);
-	}
-}
+			<div className="page__main">
+        {props.children}
+        <MainPopups />
+      </div>
+			<div className="page__footer">
+        <MainFooter />
+			</div>
+      <a className="page__to-top">
+        <svg className="page__icon svg">
+					<use xlinkHref="/img/svgSprite.svg#icon__arrow_down"></use>
+        </svg>
+      </a>
+		</div>
+  </>);
+};
 
 export default AppShell;
