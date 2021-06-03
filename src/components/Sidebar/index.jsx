@@ -47,7 +47,7 @@ const Sidebar = () => {
       <div id="kt_aside_menu_wrapper" className="aside-menu-wrapper flex-column-fluid">
         <div id="kt_aside_menu" className="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
           <ul className="menu-nav">
-            <MenuItem title="Мой профиль" link="/">
+            <MenuItem title="Мой профиль" link="/personal">
               <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                 <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                   <polygon points="0 0 24 0 24 24 0 24"></polygon>
@@ -56,7 +56,7 @@ const Sidebar = () => {
                 </g>
               </svg>
             </MenuItem>
-            <MenuItem title="Мои пользователи/субагенты" link="subagents">
+            <MenuItem title="Мои пользователи/субагенты" link="/personal/subagents">
               <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                 <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                   <polygon points="0 0 24 0 24 24 0 24"></polygon>
@@ -65,7 +65,7 @@ const Sidebar = () => {
                 </g>
               </svg>
             </MenuItem>
-            <MenuItem title="Мои клиенты" link="clients">
+            <MenuItem title="Мои клиенты" link="/personal/clients">
               <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                 <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                   <polygon points="0 0 24 0 24 24 0 24"></polygon>
@@ -74,7 +74,7 @@ const Sidebar = () => {
                 </g>
               </svg>
             </MenuItem>
-            <MenuItem title="Мои заявки" link="applications">
+            <MenuItem title="Мои заявки" link="/personal/applications">
               <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                 <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                   <rect x="0" y="0" width="24" height="24"></rect>
@@ -84,7 +84,7 @@ const Sidebar = () => {
                 </g>
               </svg>
             </MenuItem>
-            <MenuItem title="Мои доходы" link="income">
+            <MenuItem title="Мои доходы" link="/personal/income">
               <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                 <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                   <polygon points="0 0 24 0 24 24 0 24"></polygon>

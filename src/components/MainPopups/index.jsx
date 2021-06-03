@@ -5,6 +5,7 @@ import { api_query } from '../../api';
 
 const MainPopups = () => {
   const [loginData, setLoginData] = useState({email: '', password: ''});
+
   const login = e => {
     e.preventDefault();
 
@@ -14,11 +15,13 @@ const MainPopups = () => {
       api_query.post('/user/login', loginData)
       .then(res => {
         const { success, user } = res.data;
+        console.log(res.data)
   
         if (success) {
           setLoginData({email: '', password: ''});
           localStorage.setItem('userLoggedIn', JSON.stringify(true));
           localStorage.setItem('user', JSON.stringify(user));
+          window.location.replace('/personal');
         } else {
           window.hystModal.open('#signup-failure');
         }

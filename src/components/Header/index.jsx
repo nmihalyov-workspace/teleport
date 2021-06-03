@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import globalContext from '../../context/global';
 
 const Header = () => {
+  const { user } = useContext(globalContext);
+
+  const logout = () => {
+    localStorage.setItem('userLoggedIn', JSON.stringify(false));
+    localStorage.setItem('user', JSON.stringify({}));
+    window.location.replace('/');
+  }
+
 	return (
     <div id="kt_header" className="header header-fixed">
       <div className="container-fluid d-flex align-items-stretch justify-content-between">
@@ -78,11 +87,11 @@ const Header = () => {
             </div>
             <div className="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-lg">
               <div className="d-flex flex-column px-8 py-4">
-                <div className="font-weight-bold font-size-h5 text-dark-75">Иванов Иван Иванович</div>
+                <div className="font-weight-bold font-size-h5 text-dark-75">{user.head_full_name}</div>
                 <div className="navi mt-3 navi-spacer-x-0 p-0">
                   <span className="navi-item">
                     <span className="navi-link p-0">
-                      <a className="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6" href="#">Выход</a>
+                      <a className="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6" href="javascript:void(0)" onClick={logout}>Выход</a>
                     </span>
                   </span>
                 </div>

@@ -157,7 +157,7 @@ const withRegistration = (WrappedComponent) => {
         .then(res => {
           if (res.data.success) {
             const redirectOnClick = () => {
-              this.props.history.push('/');
+              window.location.replace('/');
               window.$('.popup__close, .hystmodal__shadow, .popup__footer .button').off('click', redirectOnClick);
             };
             window.hystModal.open('#signup-success');

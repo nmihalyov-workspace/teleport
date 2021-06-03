@@ -34,27 +34,42 @@ const AppRouterWrapper = ({ children }) => {
 };
 
 const App = () => {
-  const userLoggedIn = () => {
-    if (!JSON.parse(localStorage.getItem('userLoggedIn'))) {
-      return false;
-    } else {
-      const token_api = JSON.parse(localStorage.getItem('user')).auth.token;
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-      return api_query.post('/user/info', {token_api})
-      .then(res => res.data.success)
-      .catch(() => false);
+  useEffect(() => {
+    if (!JSON.parse(localStorage.getItem('userLoggedIn'))) {
+      setLoggedIn(false);
+      setLoading(false);
+    } else {
+      const token_api = JSON.parse(localStorage.getItem('user')).auth ? JSON.parse(localStorage.getItem('user')).auth.token : '';
+  
+      api_query.post('/user/info', {token_api})
+      .then(res => {
+        setLoggedIn(res.data.success || false);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoggedIn(false);
+        setLoading(false);
+      });
     }
-  }
+  }, []);
 
   return (
-    <GlobalContext.Provider value={{}}>
+    <GlobalContext.Provider value={{user, setUser}}>
       <Router>
         <AppRouterWrapper>
           <Switch>
             {routes.map(route => {
               const Page = () => route.personal ? <PersonalAppShell>{route.page()}</PersonalAppShell> : <AppShell>{route.page()}</AppShell>;
 
-              return <Route key={route.path} path={route.path} exact={route.exact} component={() => route.personal && !userLoggedIn() ? <Redirect to={{pathname: '/'}} /> : <Page />} />;
+              return <Route
+                key={route.path}
+                path={route.path}
+                exact={route.exact}
+                component={() => loading ? null : route.personal && !loggedIn ? <Redirect to={{pathname: '/'}} /> : <Page />} />;
             })}
           </Switch>
         </AppRouterWrapper>
