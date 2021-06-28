@@ -15,13 +15,20 @@ const MainPopups = () => {
       api_query.post('/user/login', loginData)
       .then(res => {
         const { success, user } = res.data;
-        console.log(res.data)
   
         if (success) {
           setLoginData({email: '', password: ''});
           localStorage.setItem('userLoggedIn', JSON.stringify(true));
-          localStorage.setItem('user', JSON.stringify(user));
-          window.location.replace('/personal');
+          api_query.post('/user/info', {token_api: user.auth.token})
+          .then(res => {
+            const { success, user } = res.data;
+            if (success) {
+              localStorage.setItem('user', JSON.stringify(user));
+              window.location.replace('/personal');
+            } else {
+              window.hystModal.open('#signup-failure');
+            }
+          });
         } else {
           window.hystModal.open('#signup-failure');
         }

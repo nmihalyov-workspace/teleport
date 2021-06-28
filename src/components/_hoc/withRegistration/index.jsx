@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { api_query } from '../../../api';
 
-const withRegistration = (WrappedComponent) => {
+const withRegistration = WrappedComponent => {
 	return withRouter(class extends React.PureComponent {
 		state = {
 			entity: {
@@ -14,9 +14,9 @@ const withRegistration = (WrappedComponent) => {
         organization_name: '',
         head_full_name: '',
         head_position: '',
-        basis_authority_head: null,
-        basis_authority_head_id: '',
-        taxation_system: null,
+        head_basis_authorities: null,
+        basis_authority_id: '',
+        taxation_systems: null,
         taxation_system_id: '',
         okved: '',
         registration_date: '',
@@ -27,9 +27,9 @@ const withRegistration = (WrappedComponent) => {
         address_post_matches_legal: true,
         address_actual: '',
         address_actual_matches_legal: true,
-        charter: '',
-        director_appointment_protocol: '',
-        director_passport: '',
+        charter: [],
+        director_appointment_protocol: [],
+        director_passport: [],
         bank_bik: '',
         bank_rs: '',
         bank_ks: '',
@@ -45,14 +45,14 @@ const withRegistration = (WrappedComponent) => {
         named: '',
         okved: '',
         registration_date: '',
-        taxation_system: null,
+        taxation_systems: null,
         taxation_system_id: '',
         address_legal: '',
         address_post: '',
         address_post_matches_legal: true,
         address_actual: '',
         address_actual_matches_legal: true,
-        passport: '',
+        passport: [],
         bank_bik: '',
         bank_rs: '',
         bank_ks: '',
@@ -73,8 +73,8 @@ const withRegistration = (WrappedComponent) => {
         registration_address: '',
         inn: '',
         snils: '',
-        passport_main_spread: '',
-        passport_current_registration: '',
+        passport_main_spread: [],
+        passport_current_registration: [],
         snils_image: '',
         bank_bik: '',
         bank_rs: '',
@@ -86,52 +86,43 @@ const withRegistration = (WrappedComponent) => {
 		}
 
     componentDidMount() {
-      api_query.post('/user/basis_authority_heads')
+      api_query.post('/agent_organization/head_basis_authorities')
       .then(res => {
-        const { success, basis } = res.data;
+        const { success, head_basis_authorities } = res.data;
 
         if (success) {
           this.setState(prevState => ({
             ...prevState,
             entity: {
               ...prevState.entity,
-              basis_authority_head: basis
+              head_basis_authorities: head_basis_authorities
             }
           }));
         }
       });
 
-      api_query.post('/user/taxation_systems')
+      api_query.post('/agent_organization/taxation_systems')
       .then(res => {
-        const { success, taxations } = res.data;
+        const { success, taxation_systems } = res.data;
 
         if (success) {
           this.setState(prevState => ({
             ...prevState,
             entity: {
               ...prevState.entity,
-              taxation_system: taxations
+              taxation_systems: taxation_systems
             },
             entrepreneur: {
               ...prevState.entrepreneur,
-              taxation_system: taxations
+              taxation_systems: taxation_systems
             }
           }));
         }
-      });
-    }
-
-    fileToBase64 = async file => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (e) => reject(e);
       });
     }
 
     formData = inputData => {
-      const data = JSON.parse(JSON.stringify(inputData));
+      const data = Object.assign({}, inputData);
       let isValid = true;
 
       Object.keys(data).map(el => {
@@ -153,8 +144,18 @@ const withRegistration = (WrappedComponent) => {
 
     sendRequest = ({data, isValid}) => {
       if (isValid) {
-        api_query.post('/user/register', data)
-        .then(res => {
+        const formData = new FormData();
+        Object.keys(data).map(el => {
+          if (Array.isArray(data[el])) {
+            data[el].map(e => {
+              formData.append(el + '[]', e);
+            });
+          } else {
+            formData.append(el, data[el]);
+          }
+        });
+
+        api_query.post('/user/register', formData, {headers: {'Content-Type': 'multipart/form-data'}}).then(res => {
           if (res.data.success) {
             const redirectOnClick = () => {
               window.location.replace('/');
@@ -173,7 +174,7 @@ const withRegistration = (WrappedComponent) => {
 
     setEntity = async (key, value) => {
       if (['charter', 'director_appointment_protocol', 'director_passport'].includes(key)) {
-        value = await this.fileToBase64(value);
+        value = [value];
       }
 
       this.setState(prevState => ({
@@ -187,7 +188,7 @@ const withRegistration = (WrappedComponent) => {
 
     setEntrepreneur = async (key, value) => {
       if (key === 'passport') {
-        value = await this.fileToBase64(value);
+        value = [value];
       }
 
       this.setState(prevState => ({
@@ -201,7 +202,7 @@ const withRegistration = (WrappedComponent) => {
 
     setSelfemployed = async (key, value) => {
       if (['passport_main_spread', 'passport_current_registration', 'snils_image'].includes(key)) {
-        value = await this.fileToBase64(value);
+        value = [value];
       }
 
       this.setState(prevState => ({
@@ -213,7 +214,7 @@ const withRegistration = (WrappedComponent) => {
       }));
     }
 
-    signupEntity = (e) => {
+    signupEntity = e => {
       e.preventDefault();
 
       const entityData = this.state.entity;
@@ -222,7 +223,7 @@ const withRegistration = (WrappedComponent) => {
       this.sendRequest(this.formData(entityData));
     }
 
-    signupEntrepreneur = (e) => {
+    signupEntrepreneur = e => {
       e.preventDefault();
 
       const entrepreneurData = this.state.entrepreneur;
@@ -231,7 +232,7 @@ const withRegistration = (WrappedComponent) => {
       this.sendRequest(this.formData(entrepreneurData));
     }
 
-    signupSelfemployed = (e) => {
+    signupSelfemployed = e => {
       e.preventDefault();
 
       const selfemployedData = this.state.selfemployed;

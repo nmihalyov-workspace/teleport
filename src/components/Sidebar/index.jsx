@@ -30,7 +30,7 @@ const Sidebar = () => {
     <div id="kt_aside" className="aside aside-left aside-fixed d-flex flex-column flex-row-auto">
       <div id="kt_brand" className="brand flex-column-auto">
         <Link to="/" className="brand-logo">
-          <img src="assets/media/logos/logo_white.svg" alt="Logo" className="h-30px"/>
+          <img src="/assets/media/logos/logo_white.svg" alt="Logo" className="h-30px"/>
         </Link>
         <button id="kt_aside_toggle" className="brand-toggle btn btn-sm px-0">
           <span className="svg-icon svg-icon svg-icon-xl">
@@ -74,7 +74,7 @@ const Sidebar = () => {
                 </g>
               </svg>
             </MenuItem>
-            <MenuItem title="Мои заявки" link="/personal/applications">
+            <MenuItem title="Мои заявки" link="/personal/requests">
               <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                 <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                   <rect x="0" y="0" width="24" height="24"></rect>

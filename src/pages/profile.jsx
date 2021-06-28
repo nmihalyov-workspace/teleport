@@ -6,6 +6,7 @@ const ProfilePage = () => {
   const [types, setTypes] = useState([]);
   const [taxations, setTaxations] = useState([]);
   const { user } = useContext(globalContext);
+  const { agent_organization } = user;
 
   useEffect(() => {
     document.title = "Профиль";
@@ -19,12 +20,12 @@ const ProfilePage = () => {
       }
     });
 
-    api_query.post('/user/taxation_systems')
+    api_query.post('/user/agent_organization/taxation_systems')
     .then(res => {
-      const { success, taxations } = res.data;
+      const { success, taxation_systems } = res.data;
 
       if (success) {
-        setTaxations(taxations);
+        setTaxations(taxation_systems);
       }
     });
   }, []);
@@ -59,7 +60,7 @@ const ProfilePage = () => {
                 <div className="d-flex">
                   <div className="d-flex flex-column">
                     {/* TODO: replace head_position with organization_name */}
-                    <div className="d-flex flex-column mb-2"><span className="text-dark font-size-h5 font-weight-bold mb-0">{user.head_position}</span><span className="text-muted font-weight-bold">ИНН: {user.inn}</span></div>
+                    <div className="d-flex flex-column mb-2"><span className="text-dark font-size-h5 font-weight-bold mb-0">{agent_organization.head_position}</span><span className="text-muted font-weight-bold">ИНН: {agent_organization.inn}</span></div>
                     <div className="d-flex flex-wrap my-2"><span className="text-muted font-weight-bold"><span className="svg-icon svg-icon-md svg-icon-gray-500 mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd"><polygon points="0 0 24 0 24 24 0 24"></polygon><path d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z M10.875,15.75 C11.1145833,15.75 11.3541667,15.6541667 11.5458333,15.4625 L15.3791667,11.6291667 C15.7625,11.2458333 15.7625,10.6708333 15.3791667,10.2875 C14.9958333,9.90416667 14.4208333,9.90416667 14.0375,10.2875 L10.875,13.45 L9.62916667,12.2041667 C9.29375,11.8208333 8.67083333,11.8208333 8.2875,12.2041667 C7.90416667,12.5875 7.90416667,13.1625 8.2875,13.5458333 L10.2041667,15.4625 C10.3958333,15.6541667 10.6354167,15.75 10.875,15.75 Z" fill="#000000" fillRule="nonzero" opacity="0.3"></path><path d="M10.875,15.75 C10.6354167,15.75 10.3958333,15.6541667 10.2041667,15.4625 L8.2875,13.5458333 C7.90416667,13.1625 7.90416667,12.5875 8.2875,12.2041667 C8.67083333,11.8208333 9.29375,11.8208333 9.62916667,12.2041667 L10.875,13.45 L14.0375,10.2875 C14.4208333,9.90416667 14.9958333,9.90416667 15.3791667,10.2875 C15.7625,10.6708333 15.7625,11.2458333 15.3791667,11.6291667 L11.5458333,15.4625 C11.3541667,15.6541667 11.1145833,15.75 10.875,15.75 Z" fill="#000000"></path></g></svg></span><span className="label label-light-danger label-pill label-inline mr-2" data-toggle="tooltip" title="Договор с порталом" data-placement="top">Договор не подписан</span></span></div>
                     <div className="mt-4"><button className="btn btn-danger btn-sm font-weight-bolder w-100 w-sm-130px" type="button" data-toggle="modal" data-target="#changePass">Изменить пароль</button></div>
                   </div>
@@ -88,7 +89,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-sm-right">ФИО руководителя</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.head_full_name}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.head_full_name}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
@@ -96,20 +97,20 @@ const ProfilePage = () => {
                         <div className="text-muted text-sm-right">Должность руководителя</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.head_position}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.head_position}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
                       <div className="col-12 col-sm-4 col-md-3">
                         <div className="text-muted text-right">Паспорт</div>
                       </div>
-                      <div className="col-12 col-sm-8 col-md-9"><a className="btn btn-primary btn-sm btn-light-primary font-weight-bold" href={user.director_passport} download>Скачать</a></div>
+                      <div className="col-12 col-sm-8 col-md-9"><a className="btn btn-primary btn-sm btn-light-primary font-weight-bold" href={agent_organization.director_passport} download>Скачать</a></div>
                     </div>
                     <div className="row mb-5">
                       <div className="col-12 col-sm-4 col-md-3">
                         <div className="text-muted text-right">Протокол/решение о назначении</div>
                       </div>
-                      <div className="col-12 col-sm-8 col-md-9"><a className="btn btn-primary btn-sm btn-light-primary font-weight-bold" href={user.director_appointment_protocol} download>Скачать</a></div>
+                      <div className="col-12 col-sm-8 col-md-9"><a className="btn btn-primary btn-sm btn-light-primary font-weight-bold" href={agent_organization.director_appointment_protocol} download>Скачать</a></div>
                     </div>
                     <div className="row mb-5">
                       <div className="col-12 col-sm-4 col-md-3">
@@ -134,7 +135,7 @@ const ProfilePage = () => {
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
                         {/* TODO: replace head_position with organization_name */}
-                        <div className="text-dark-75 font-weight-bold">{user.head_position}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.head_position}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
@@ -142,7 +143,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">ФИО директора/генерального директора</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.head_full_name}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.head_full_name}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
@@ -151,7 +152,7 @@ const ProfilePage = () => {
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
                         {taxations.map(el => {
-                          if (el.id === user.taxation_system_id) {
+                          if (el.id === agent_organization.taxation_system_id) {
                             return <div className="text-dark-75 font-weight-bold">{el.name}</div>;
                           }
                         })}
@@ -162,7 +163,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">ОГРН</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.ogrn}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.ogrn}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
@@ -170,7 +171,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">ИНН</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.inn}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.inn}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
@@ -178,7 +179,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">КПП</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.kpp}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.kpp}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
@@ -186,7 +187,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">ОКВЭД</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.okved}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.okved}</div>
                         <div className="text-muted font-size-sm">Консультирование по вопросам коммерческой деятельности и управления</div>
                       </div>
                     </div>
@@ -207,7 +208,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">Дата регистрации</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{Intl.DateTimeFormat('ru-Ru', {day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(user.registration_date))}</div>
+                        <div className="text-dark-75 font-weight-bold">{Intl.DateTimeFormat('ru-Ru', {day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(agent_organization.registration_date))}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
@@ -215,7 +216,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">Численность сотрудников компании</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.employees_number}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.employees_number}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
@@ -223,14 +224,14 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">Уставный капитал</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.authorized_capital} ₽</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.authorized_capital} ₽</div>
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-12 col-sm-4 col-md-3">
                         <div className="text-muted text-right">Устав</div>
                       </div>
-                      <div className="col-12 col-sm-8 col-md-9"><a className="btn btn-primary btn-sm btn-light-primary font-weight-bold" href={user.charter} download>Скачать</a></div>
+                      <div className="col-12 col-sm-8 col-md-9"><a className="btn btn-primary btn-sm btn-light-primary font-weight-bold" href={agent_organization.charter} download>Скачать</a></div>
                     </div>
                   </div>
                   <div className="card-footer d-flex justify-content-between"><button className="btn btn-sm btn-danger font-weight-bold" type="button" data-toggle="modal" data-target="#editData">Редактировать</button></div>
@@ -247,32 +248,32 @@ const ProfilePage = () => {
                       <div className="col-12 col-sm-4 col-md-3">
                         <div className="text-muted text-right">Почта организации</div>
                       </div>
-                      <div className="col-12 col-sm-8 col-md-9"><a className="text-primary font-weight-bold" href={`mailto:user.email`}>{user.email}</a></div>
+                      <div className="col-12 col-sm-8 col-md-9"><a className="text-primary font-weight-bold" href={`mailto:user.email`}>{agent_organization.email}</a></div>
                     </div>
                     <div className="row mb-5">
                       <div className="col-12 col-sm-4 col-md-3">
                         <div className="text-muted text-right">Юридический адрес</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.address_legal}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.address_legal}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
                       <div className="col-12 col-sm-4 col-md-3">
                         <div className="text-muted text-right">Фактический адрес</div>
-                        <div className="text-success text-right font-size-sm">{user.address_actual_matches_legal === 1 ? 'совпадает с юридическим адресом' : 'не совпадает с юридическим адресом'}</div>
+                        <div className="text-success text-right font-size-sm">{agent_organization.address_actual_matches_legal === 1 ? 'совпадает с юридическим адресом' : 'не совпадает с юридическим адресом'}</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.address_actual}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.address_actual}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
                       <div className="col-12 col-sm-4 col-md-3">
                         <div className="text-muted text-right">Почтовый адрес</div>
-                        <div className="text-success text-right font-size-sm">{user.address_post_matches_legal === 1 ? 'совпадает с юридическим адресом' : 'не совпадает с юридическим адресом'}</div>
+                        <div className="text-success text-right font-size-sm">{agent_organization.address_post_matches_legal === 1 ? 'совпадает с юридическим адресом' : 'не совпадает с юридическим адресом'}</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.address_post}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.address_post}</div>
                       </div>
                     </div>
                     <div className="row">
@@ -291,7 +292,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">БИК</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.bank_bik}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.bank_bik}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
@@ -299,7 +300,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">Наименование банка</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.bank_name}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.bank_name}</div>
                       </div>
                     </div>
                     <div className="row mb-5">
@@ -307,7 +308,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">Корреспондентский счёт</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.bank_ks}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.bank_ks}</div>
                       </div>
                     </div>
                     <div className="row">
@@ -315,7 +316,7 @@ const ProfilePage = () => {
                         <div className="text-muted text-right">Расчётный счёт</div>
                       </div>
                       <div className="col-12 col-sm-8 col-md-9">
-                        <div className="text-dark-75 font-weight-bold">{user.bank_rs}</div>
+                        <div className="text-dark-75 font-weight-bold">{agent_organization.bank_rs}</div>
                       </div>
                     </div>
                   </div>

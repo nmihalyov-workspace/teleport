@@ -12,10 +12,14 @@ const AppRouterWrapper = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    if (counter > 0) {
+    if (counter === 0) {
       const script = document.querySelector('head script[src*="scripts.bundle.js"]');
       const scriptSrc = document.querySelector('head script[src*="scripts.bundle.js"]').getAttribute('src');
-  
+      
+      if (document.querySelector('head link[href*="chunk.css"]')) {
+        document.querySelector('head link[href*="chunk.css"]').remove();
+      }
+      
       if (script) {
         script.remove();
         setTimeout(() => {
@@ -45,15 +49,22 @@ const App = () => {
     } else {
       const token_api = JSON.parse(localStorage.getItem('user')).auth ? JSON.parse(localStorage.getItem('user')).auth.token : '';
   
-      api_query.post('/user/info', {token_api})
-      .then(res => {
-        setLoggedIn(res.data.success || false);
+      if (token_api) {
+        setLoggedIn(true);
         setLoading(false);
-      })
-      .catch(() => {
+        // api_query.post('/user/info', {token_api})
+        // .then(res => {
+        //   setLoggedIn(res.data.success || false);
+        //   setLoading(false);
+        // })
+        // .catch(() => {
+        //   setLoggedIn(false);
+        //   setLoading(false);
+        // });
+      } else {
         setLoggedIn(false);
         setLoading(false);
-      });
+      }
     }
   }, []);
 

@@ -4,6 +4,7 @@ import HeaderMobile from '../HeaderMobile';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
 import Footer from '../Footer';
+import PersonalPopups from '../PersonalPopups';
 
 class PersonalAppShell extends React.PureComponent {
   componentDidMount() {
@@ -21,6 +22,7 @@ class PersonalAppShell extends React.PureComponent {
             <Header />
             <div id="kt_content" className="content d-flex flex-column flex-column-fluid">
               {this.props.children}
+              <PersonalPopups />
             </div>
             <Footer />
           </div>

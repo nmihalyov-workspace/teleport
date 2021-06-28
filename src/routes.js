@@ -5,6 +5,9 @@ import MainPage from './pages/main.jsx';
 import SignupClientPage from './pages/signup-client.jsx';
 import SignupAgentPage from './pages/signup-agent.jsx';
 import ProfilePage from './pages/profile.jsx';
+import ClientsPage from './pages/clients.jsx';
+import RequestPage from './pages/requests.jsx';
+import EditRequestPage from './pages/editRequest.jsx';
 
 const routes = [
 	{
@@ -44,6 +47,36 @@ const routes = [
 		page() {
 			return (
 				<ProfilePage/>
+			);
+		}
+	},
+	{
+		path: '/personal/clients',
+    exact: true,
+    personal: true,
+		page() {
+			return (
+				<ClientsPage/>
+			);
+		}
+	},
+	{
+		path: '/personal/requests',
+    exact: true,
+    personal: true,
+		page() {
+			return (
+				<RequestPage/>
+			);
+		}
+	},
+	{
+		path: '/personal/requests/edit',
+    exact: true,
+    personal: true,
+		page() {
+			return (
+				<EditRequestPage/>
 			);
 		}
 	}

@@ -37,7 +37,7 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                           <div className="field__info"></div>
                         </div>
                       </div>
-                      <div className="form__item form__item_half form__item_loader"><img src="img/img__loader.gif" style={{display: "none"}} /></div>
+                      <div className="form__item form__item_half form__item_loader"><img src="img/img__loader.gif" alt="" style={{display: "none"}} /></div>
                       <div className="form__item form__item_half">
                         <div className="field"><label className="field__inner">
                             <div className="field__label">КПП</div><input onChange={e => setEntity('kpp', e.target.value)} value={entity.kpp} className="field__input input" type="text" required="required" />
@@ -75,9 +75,9 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       </div>
                       <div className="form__item form__item_half">
                         <div className="field"><label className="field__inner">
-                            <div className="field__label">Основание полномочий руководителя</div><select className="select" required="required" onChange={e => setEntity('basis_authority_head_id', +e.target.value)}>
+                            <div className="field__label">Основание полномочий руководителя</div><select className="select" required="required" onChange={e => setEntity('basis_authority_id', +e.target.value)}>
                               <option>Выберите значение</option>
-                              {entity.basis_authority_head && entity.basis_authority_head.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
+                              {entity.head_basis_authorities && entity.head_basis_authorities.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
                             </select>
                           </label></div>
                       </div>
@@ -87,7 +87,7 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                         <div className="field"><label className="field__inner">
                             <div className="field__label">Система налогообложения</div><select className="select" required="required" onChange={e => setEntity('taxation_system_id', +e.target.value)}>
                               <option>Выберите значение</option>
-                              {entity.taxation_system && entity.taxation_system.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
+                              {entity.taxation_systems && entity.taxation_systems.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
                             </select>
                           </label></div>
                       </div>
@@ -275,7 +275,7 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                         <div className="field"><label className="field__inner">
                             <div className="field__label">Система налогообложения</div><select className="select" required="required" onChange={e => setEntrepreneur('taxation_system_id', +e.target.value)}>
                               <option>Выберите значение</option>
-                              {entrepreneur.taxation_system && entrepreneur.taxation_system.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
+                              {entrepreneur.taxation_systems && entrepreneur.taxation_systems.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
                             </select>
                           </label></div>
                       </div>

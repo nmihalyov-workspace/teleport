@@ -6,6 +6,7 @@
   "air-datepicker": "^2.2.3",
   "aos": "^2.3.4",
   "axios": "^0.21.1",
+  "classnames": "^2.3.1",
   "cleave.js": "^1.6.0",
   "node-sass": "^4.11.0",
   "prop-types": "^15.7.2",
