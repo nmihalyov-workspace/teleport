@@ -1,1 +1,0 @@
-{"version":3,"names":[],"mappings":"","sources":["features/forms/clientToggler.js"],"sourcesContent":["'use strict';\r\n\r\n$(\"input:radio\").click(function(){\r\n\t$(\".js-toggle\").toggle();\r\n});"],"file":"clientToggler.js"}

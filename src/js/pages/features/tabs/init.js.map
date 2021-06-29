@@ -1,1 +1,0 @@
-{"version":3,"names":[],"mappings":"","sources":["features/tabs/init.js"],"sourcesContent":["jQuery(document).ready(function() {\r\n\tvar url = document.location.toString();\r\n\tif (url.match('#')) {\r\n\t\t$('.nav-tabs a[href=\"#' + url.split('#')[1] + '\"]').tab('show');\r\n\t}\r\n});\r\n"],"file":"init.js"}
