@@ -28,7 +28,12 @@ class EditRequestPage extends React.PureComponent {
   }
 
   componentDidMount() {
+    const token_api = JSON.parse(localStorage.getItem('user')).auth.token;
+
     api_query.post('/user/list', {
+      token_api,
+      agents: 1,
+      clients: 1,
       page: 1
     })
     .then(res => {
@@ -686,7 +691,7 @@ class EditRequestPage extends React.PureComponent {
                             </table>
                           </div>
                           <div className="col-lg-6">
-                            <div className="bg-success-o-30 rounded py-4 px-6 mb-4"><Image className="w-auto h-25px" alt="bank" src="assets/media/logos/bank-us.png"/>
+                            <div className="bg-success-o-30 rounded py-4 px-6 mb-4"><Image width="75" height="25" className="w-auto h-25px" alt="bank" src="/assets/media/logos/bank-us.png"/>
                               <div className="separator separator-solid my-2"></div>
                               <div className="d-sm-flex align-items-center justify-content-between">
                                 <h5 className="font-weight-bolder font-size-h5 text-dark-75 my-2">Банковская гарантия</h5><a className="btn btn-primary btn-sm btn-success font-weight-bold" href="filename.pdf" download>Скачать</a>

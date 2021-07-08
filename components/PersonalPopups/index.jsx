@@ -4,8 +4,8 @@ import Modal from '../Modal';
 
 import withPersonalPopups from '../_hoc/withPersonalPopups';
 
-const PersonalPopups = ({ state, setNewClient, addNewClient }) => {
-  const { newClient } = state;
+const PersonalPopups = ({ state, setNewClient, setNewUser, addNewClient, addNewUser }) => {
+  const { newClient, newUser } = state;
 
   return (<>
     <Modal
@@ -16,6 +16,14 @@ const PersonalPopups = ({ state, setNewClient, addNewClient }) => {
       footer={<><button className="btn btn-light-primary font-weight-bold" type="button" data-dismiss="modal">Отмена</button><button className="btn btn-primary font-weight-bold" type="button" onClick={addNewClient}>Сохранить</button></>}>
         <><div className="form-group row"><label className="col-lg-3 col-form-label text-lg-right" htmlFor="innClient">ИНН</label>
           <div className="col-lg-9"><input className="form-control" id="innClient" type="text" value={newClient.inn} onChange={e => setNewClient('inn', e.target.value)}/></div>
+        </div>
+        <div className="form-group row"><label className="col-lg-3 col-form-label text-lg-right" htmlFor="organization_types">Тип организации</label>
+          <div className="col-lg-9"><select className="form-control" id="organization_types" onChange={e => setNewClient('user_client_organization_type_id', +e.target.value)} value={newClient.user_client_organization_type_id}>
+              <option>выберите тип организации</option>
+              {newClient.client_organization_types && newClient.client_organization_types.map(el =>
+                <option key={el.id} value={el.id}>{el.name}</option>
+              )}
+            </select></div>
         </div>
         <div className="form-group row"><label className="col-lg-3 col-form-label text-lg-right" htmlFor="fioClient">ФИО</label>
           <div className="col-lg-9"><input className="form-control" id="fioClient" type="text" value={newClient.full_name} onChange={e => setNewClient('full_name', e.target.value)}/></div>
@@ -718,6 +726,45 @@ const PersonalPopups = ({ state, setNewClient, addNewClient }) => {
         <div className="rounded bg-light p-3 mt-2 d-flex align-items-center justify-content-between flex-wrap"><Image className="w-auto h-25px" alt="bank" layout="fill" src="/assets/media/logos/bank-us.png"/><span className="label label-success label-pill label-inline mr-2 my-2">Исполнена</span></div>
         <div className="rounded bg-light p-3 mt-2 d-flex align-items-center justify-content-between flex-wrap"><Image className="w-auto h-25px" alt="bank" layout="fill" src="/assets/media/logos/bank-abb.png"/><span className="label label-warning label-pill label-inline mr-2 my-2">Принято другое предложение</span></div>
         <div className="rounded bg-light p-3 mt-2 d-flex align-items-center justify-content-between flex-wrap"><Image className="w-auto h-25px" alt="bank" layout="fill" src="/assets/media/logos/bank-abb.png"/><span className="label label-danger label-pill label-inline mr-2 my-2">Изменение комиссии</span></div>
+    </></Modal>
+    <Modal
+      id="addUser"
+      scrollable
+      size="lg"
+      title="Добавить пользователя"
+      footer={<><button className="btn btn-light-primary font-weight-bold" type="button" data-dismiss="modal">Отмена</button><button className="btn btn-primary font-weight-bold" type="button" onClick={addNewUser}>Сохранить</button></>}><>
+        <div className="form-group row"><label className="col-lg-3 col-form-label text-lg-right" htmlFor="fio">ФИО</label>
+          <div className="col-lg-9"><input className="form-control" id="fio" type="text" placeholder="ФИО" value={newUser.full_name} onChange={e => setNewUser('full_name', e.target.value)}/></div>
+        </div>
+        <div className="form-group row"><label className="col-lg-3 col-form-label text-lg-right" htmlFor="place">Должность</label>
+          <div className="col-lg-9"><input className="form-control" id="place" type="text" placeholder="введите должность" value={newUser.position} onChange={e => setNewUser('position', e.target.value)}/></div>
+        </div>
+        <div className="form-group row"><label className="col-lg-3 col-form-label text-lg-right" htmlFor="number">Номер телефона</label>
+          <div className="col-lg-5"><input className="form-control" id="number" type="tel" placeholder="+79501234567" value={newUser.phone} onChange={e => setNewUser('phone', e.target.value)}/></div>
+          <div className="col-lg-4"><input className="form-control" type="text" placeholder="добавочный" value={newUser.phone_addition} onChange={e => setNewUser('phone_addition', e.target.value)}/></div>
+        </div>
+        <div className="form-group row"><label className="col-lg-3 col-form-label text-lg-right" htmlFor="email">Электронная почта</label>
+          <div className="col-lg-9"><input className="form-control" id="email" type="email" placeholder="email@email.ru" value={newUser.email} onChange={e => setNewUser('email', e.target.value)}/></div>
+        </div>
+        <div className="form-group row"><label className="col-lg-3 col-form-label text-lg-right" htmlFor="credentials">Полномочия</label>
+          <div className="col-lg-9"><select className="form-control" id="credentials" onChange={e => setNewUser('user_credential', +e.target.value)} value={newUser.user_credential}>
+              <option>выберите уровень</option>
+              {newUser.credentials && newUser.credentials.map(el =>
+                <option key={el.id} value={el.id}>{el.name}</option>
+              )}
+            </select></div>
+        </div>
+        <div className="form-group row mb-0"><label className="col-lg-3 col-form-label text-lg-right" htmlFor="password">Пароль</label>
+          <div className="col-lg-9"><input className="form-control" id="password" type="text" value={newUser.password} onChange={e => setNewUser('password', e.target.value)} placeholder="пароль"/></div>
+        </div>
+    </></Modal>
+    <Modal
+      id="removeUser"
+      scrollable
+      size="md"
+      title="Удаление записи"
+      footer={<><button className="btn btn-light-primary font-weight-bold" type="button" data-dismiss="modal">Отмена</button><button className="btn btn-primary font-weight-bold" type="button">Сохранить</button></>}><>
+        <p className="mb-0 text-danger h6 font-weight-bold">Сообщение о безвозратности удаления записи</p>
     </></Modal>
   </>);
 };

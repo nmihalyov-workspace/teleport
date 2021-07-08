@@ -1,11 +1,12 @@
-import React from 'react';
-import Image from 'next/image';
+import React, { forwardRef } from 'react';
+import DatePicker from "react-datepicker";
 
 import AppWrapper from '../../components/AppWrapper';
 import withRegistration from '../../components/_hoc/withRegistration';
 
 const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, signupEntity, signupEntrepreneur, signupSelfemployed }) => {
   const { entity, entrepreneur, selfemployed } = state;
+  const CustomDateInput = forwardRef(({ value, onClick }, ref) => <input className="field__input input" onClick={onClick} ref={ref} value={value} />);
 
 	return (
     <AppWrapper title="Телепорт — Все банки одним кликом">
@@ -31,22 +32,21 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       <div className="form__row">
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">ИНН</div><input onChange={e => setEntity('inn', e.target.value)} value={entity.inn} className="field__input input" type="text" required="required" />
-                            </label>
-                            <div className="field__info"></div>
-                          </div>
-                        </div>
-                        <div className="form__item form__item_half form__item_loader"><Image src="img/img__loader.gif" alt="" style={{display: "none"}} /></div>
-                        <div className="form__item form__item_half">
-                          <div className="field"><label className="field__inner">
-                              <div className="field__label">КПП</div><input onChange={e => setEntity('kpp', e.target.value)} value={entity.kpp} className="field__input input" type="text" required="required" />
+                              <div className="field__label">ИНН</div><input onChange={e => setEntity('inn', e.target.value, true)} value={entity.inn} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">ОГРН</div><input onChange={e => setEntity('ogrn', e.target.value)} value={entity.ogrn} className="field__input input" type="text" required="required" />
+                              <div className="field__label">КПП</div><input onChange={e => setEntity('kpp', e.target.value, true)} value={entity.kpp} className="field__input input" type="text" required="required" />
+                            </label>
+                            <div className="field__info"></div>
+                          </div>
+                        </div>
+                        <div className="form__item form__item_half">
+                          <div className="field"><label className="field__inner">
+                              <div className="field__label">ОГРН</div><input onChange={e => setEntity('ogrn', e.target.value, true)} value={entity.ogrn} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
@@ -74,7 +74,7 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Основание полномочий руководителя</div><select className="select" required="required" onChange={e => setEntity('basis_authority_id', +e.target.value)}>
+                              <div className="field__label">Основание полномочий руководителя</div><select className="select" required="required" onChange={e => setEntity('basis_authority_id', e.target.value, true)}>
                                 <option>Выберите значение</option>
                                 {entity.head_basis_authorities && entity.head_basis_authorities.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
                               </select>
@@ -84,7 +84,7 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       <div className="form__row">
                         <div className="form__item">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Система налогообложения</div><select className="select" required="required" onChange={e => setEntity('taxation_system_id', +e.target.value)}>
+                              <div className="field__label">Система налогообложения</div><select className="select" required="required" onChange={e => setEntity('taxation_system_id', e.target.value, true)}>
                                 <option>Выберите значение</option>
                                 {entity.taxation_systems && entity.taxation_systems.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
                               </select>
@@ -101,7 +101,7 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Уставный капитал</div><input onChange={e => setEntity('authorized_capital', e.target.value)} value={entity.authorized_capital} className="field__input input" type="text" required="required" />
+                              <div className="field__label">Уставный капитал</div><input onChange={e => setEntity('authorized_capital', e.target.value, true)} value={entity.authorized_capital} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
@@ -109,14 +109,18 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
                               <div className="field__label">Дата регистрации</div>
-                              <input onChange={e => setEntity('registration_date', e.target.value)} value={entity.registration_date} className="field__input input input_date" type="text" />
+                              <DatePicker
+                                selected={entity.registration_date}
+                                onChange={date => setEntity('registration_date', date)}
+                                dateFormat="dd.MM.yyyy"
+                                customInput={<CustomDateInput />} />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Численность сотрудников</div><input onChange={e => setEntity('employees_number', +e.target.value)} value={entity.employees_number} className="field__input input" type="text" required="required" />
+                              <div className="field__label">Численность сотрудников</div><input onChange={e => setEntity('employees_number', e.target.value, true)} value={entity.employees_number} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
@@ -178,21 +182,21 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       <div className="form__row">
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">БИК банка</div><input onChange={e => setEntity('bank_bik', e.target.value)} value={entity.bank_bik} className="field__input input" type="text" required="required" />
+                              <div className="field__label">БИК банка</div><input onChange={e => setEntity('bank_bik', e.target.value, true)} value={entity.bank_bik} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">К/С банка</div><input onChange={e => setEntity('bank_ks', e.target.value)} value={entity.bank_ks} className="field__input input" type="text" required="required" />
+                              <div className="field__label">К/С банка</div><input onChange={e => setEntity('bank_ks', e.target.value, true)} value={entity.bank_ks} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Р/С банка</div><input onChange={e => setEntity('bank_rs', e.target.value)} value={entity.bank_rs} className="field__input input" type="text" required="required" />
+                              <div className="field__label">Р/С банка</div><input onChange={e => setEntity('bank_rs', e.target.value, true)} value={entity.bank_rs} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
@@ -234,12 +238,11 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       <div className="form__row">
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">ИНН</div><input onChange={e => setEntrepreneur('inn', e.target.value)} value={entrepreneur.inn} className="field__input input" type="text" required="required" />
+                              <div className="field__label">ИНН</div><input onChange={e => setEntrepreneur('inn', e.target.value, true)} value={entrepreneur.inn} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
-                        <div className="form__item form__item_half form__item_loader"><Image src="img/img__loader.gif" style={{display: "none"}} /></div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
                               <div className="field__label">Наименование</div><input onChange={e => setEntrepreneur('named', e.target.value)} value={entrepreneur.named} className="field__input input" type="text" required="required" />
@@ -249,7 +252,7 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">ОГРНИП</div><input onChange={e => setEntrepreneur('ogrnip', e.target.value)} value={entrepreneur.ogrnip} className="field__input input" type="text" required="required" />
+                              <div className="field__label">ОГРНИП</div><input onChange={e => setEntrepreneur('ogrnip', e.target.value, true)} value={entrepreneur.ogrnip} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
@@ -263,7 +266,12 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Дата регистрации</div><input onChange={e => setEntrepreneur('registration_date', e.target.value)} value={entrepreneur.registration_date} className="field__input input input_date" type="text" />
+                              <div className="field__label">Дата регистрации</div>
+                              <DatePicker
+                                selected={entrepreneur.registration_date}
+                                onChange={date => setEntrepreneur('registration_date', date)}
+                                dateFormat="dd.MM.yyyy"
+                                customInput={<CustomDateInput />} />
                             </label>
                             <div className="field__info"></div>
                           </div>
@@ -272,7 +280,7 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       <div className="form__row">
                         <div className="form__item">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Система налогообложения</div><select className="select" required="required" onChange={e => setEntrepreneur('taxation_system_id', +e.target.value)}>
+                              <div className="field__label">Система налогообложения</div><select className="select" required="required" onChange={e => setEntrepreneur('taxation_system_id', e.target.value, true)}>
                                 <option>Выберите значение</option>
                                 {entrepreneur.taxation_systems && entrepreneur.taxation_systems.map(el => <option key={el.id} value={el.id}>{el.name}</option>)}
                               </select>
@@ -323,21 +331,21 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       <div className="form__row">
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">БИК банка</div><input onChange={e => setEntrepreneur('banl_bik', e.target.value)} value={entrepreneur.banl_bik} className="field__input input" type="text" required="required" />
+                              <div className="field__label">БИК банка</div><input onChange={e => setEntrepreneur('banl_bik', e.target.value, true)} value={entrepreneur.banl_bik} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">К/С банка</div><input onChange={e => setEntrepreneur('bank_ks', e.target.value)} value={entrepreneur.bank_ks} className="field__input input" type="text" required="required" />
+                              <div className="field__label">К/С банка</div><input onChange={e => setEntrepreneur('bank_ks', e.target.value, true)} value={entrepreneur.bank_ks} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Р/С банка</div><input onChange={e => setEntrepreneur('bank_rs', e.target.value)} value={entrepreneur.bank_rs} className="field__input input" type="text" required="required" />
+                              <div className="field__label">Р/С банка</div><input onChange={e => setEntrepreneur('bank_rs', e.target.value, true)} value={entrepreneur.bank_rs} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
@@ -400,21 +408,31 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Серия и номер паспорта</div><input onChange={e => setSelfemployed('passport_series', e.target.value)} value={selfemployed.passport_series} className="field__input input" type="text" required="required" />
+                              <div className="field__label">Серия и номер паспорта</div><input onChange={e => setSelfemployed('passport_series', e.target.value, true)} value={selfemployed.passport_series} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Дата выдачи паспорта</div><input onChange={e => setSelfemployed('passport_issue_date', e.target.value)} value={selfemployed.passport_issue_date} className="field__input input input_date" type="text" />
+                              <div className="field__label">Дата выдачи паспорта</div>
+                              <DatePicker
+                                selected={selfemployed.passport_issue_date}
+                                onChange={date => setSelfemployed('passport_issue_date', date)}
+                                dateFormat="dd.MM.yyyy"
+                                customInput={<CustomDateInput />} />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Дата рождения</div><input onChange={e => setSelfemployed('birthdate', e.target.value)} value={selfemployed.birthdate} className="field__input input input_date" type="text" />
+                              <div className="field__label">Дата рождения</div>
+                              <DatePicker
+                                selected={selfemployed.birthdate}
+                                onChange={date => setSelfemployed('birthdate', date)}
+                                dateFormat="dd.MM.yyyy"
+                                customInput={<CustomDateInput />} />
                             </label>
                             <div className="field__info"></div>
                           </div>
@@ -441,14 +459,14 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       <div className="form__row">
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">ИНН</div><input onChange={e => setSelfemployed('inn', e.target.value)} value={selfemployed.inn} className="field__input input" type="text" required="required" />
+                              <div className="field__label">ИНН</div><input onChange={e => setSelfemployed('inn', e.target.value, true)} value={selfemployed.inn} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">СНИЛС</div><input onChange={e => setSelfemployed('snils', e.target.value)} value={selfemployed.snils} className="field__input input" type="text" required="required" />
+                              <div className="field__label">СНИЛС</div><input onChange={e => setSelfemployed('snils', e.target.value, true)} value={selfemployed.snils} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
@@ -477,21 +495,21 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       <div className="form__row">
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">БИК банка</div><input onChange={e => setSelfemployed('bank_bik', e.target.value)} value={selfemployed.bank_bik} className="field__input input" type="text" required="required" />
+                              <div className="field__label">БИК банка</div><input onChange={e => setSelfemployed('bank_bik', e.target.value, true)} value={selfemployed.bank_bik} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">К/С банка</div><input onChange={e => setSelfemployed('bank_ks', e.target.value)} value={selfemployed.bank_ks} className="field__input input" type="text" required="required" />
+                              <div className="field__label">К/С банка</div><input onChange={e => setSelfemployed('bank_ks', e.target.value, true)} value={selfemployed.bank_ks} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
                         </div>
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">Р/С банка</div><input onChange={e => setSelfemployed('bank_rs', e.target.value)} value={selfemployed.bank_rs} className="field__input input" type="text" required="required" />
+                              <div className="field__label">Р/С банка</div><input onChange={e => setSelfemployed('bank_rs', e.target.value, true)} value={selfemployed.bank_rs} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>

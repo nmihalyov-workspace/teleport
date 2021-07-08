@@ -19,7 +19,7 @@ const MainPage = () => {
                         <p className="hero-slider__descr">Инновационный портал для получения банковской гарантии</p><a className="button button_large" data-hystmodal="#registration">Регистрация</a>
                       </div>
                     </div>
-                    <div className="grid__col grid__col_sm_4 grid__col_md_6 grid__col_xl_6 grid__col-offset_xl_1"><Image className="hero-slider__img" src="img/img__hero_01.png" srcSet="img/img__hero_01.png, img/img__hero_01_x2.png 2x" alt="" /></div>
+                    <div className="grid__col grid__col_sm_4 grid__col_md_6 grid__col_xl_6 grid__col-offset_xl_1"><Image width="802" height="480" className="hero-slider__img" src="/img/img__hero_01.png" srcSet="img/img__hero_01.png, img/img__hero_01_x2.png 2x" alt="" /></div>
                   </div>
                 </div>
               </div>
@@ -32,7 +32,7 @@ const MainPage = () => {
                         <p className="hero-slider__descr">По 44-ФЗ, 223-ФЗ, 185-ФЗ (615ПП)<br/>Коммерческие гарантии</p><a className="button button_large" href="calculator.html">Рассчитать стоимость</a>
                       </div>
                     </div>
-                    <div className="grid__col grid__col_sm_4 grid__col_md_6 grid__col_xl_6 grid__col-offset_xl_1"><Image className="hero-slider__img" src="img/img__hero_02.png" srcSet="img/img__hero_02.png, img/img__hero_02_x2.png 2x" alt="" /></div>
+                    <div className="grid__col grid__col_sm_4 grid__col_md_6 grid__col_xl_6 grid__col-offset_xl_1"><Image width="802" height="480" className="hero-slider__img" src="/img/img__hero_02.png" srcSet="img/img__hero_02.png, img/img__hero_02_x2.png 2x" alt="" /></div>
                   </div>
                 </div>
               </div>
@@ -45,7 +45,7 @@ const MainPage = () => {
                         <p className="hero-slider__descr">Инновационный портал для получения банковской гарантии</p><a className="button button_large" href="partners.html">Подробнее</a>
                       </div>
                     </div>
-                    <div className="grid__col grid__col_sm_4 grid__col_md_6 grid__col_xl_6 grid__col-offset_xl_1"><Image className="hero-slider__img" src="img/img__hero_03.png" srcSet="img/img__hero_03.png, img/img__hero_03_x2.png 2x" alt="" /></div>
+                    <div className="grid__col grid__col_sm_4 grid__col_md_6 grid__col_xl_6 grid__col-offset_xl_1"><Image width="802" height="480" className="hero-slider__img" src="/img/img__hero_03.png" srcSet="img/img__hero_03.png, img/img__hero_03_x2.png 2x" alt="" /></div>
                   </div>
                 </div>
               </div>
@@ -71,7 +71,7 @@ const MainPage = () => {
               <div className="about__inner" data-aos="fade-left" data-aos-anchor-placement="bottom-bottom">
                 <picture>
                   <source media="(max-width: 1199px)" srcSet="img/img__about.png, img/img__about_x2.png 2x" />
-                  <source media="(min-width: 1200px)" srcSet="img/img__about_x2.png" /><Image className="about__img" src="img/img__about.png" alt="" />
+                  <source media="(min-width: 1200px)" srcSet="img/img__about_x2.png" /><Image width="1124" height="740" className="about__img" src="/img/img__about.png" alt="" />
                 </picture>
               </div>
             </div>
@@ -88,9 +88,9 @@ const MainPage = () => {
               </div>
               <div className="swiper-container partners__slider partners-slider">
                 <div className="swiper-wrapper partners-slider__inner">
-                  <div className="partners-slider__slide swiper-slide"><Image className="partners-slider__img" src="img/img__partner-logo.png" alt="Partner name" /></div>
-                  <div className="partners-slider__slide swiper-slide"><Image className="partners-slider__img" src="img/img__partner-logo.png" alt="Partner name" /></div>
-                  <div className="partners-slider__slide swiper-slide"><Image className="partners-slider__img" src="img/img__partner-logo.png" alt="Partner name" /></div>
+                  <div className="partners-slider__slide swiper-slide"><Image width="480" height="128" className="partners-slider__img" src="/img/img__partner-logo.png" alt="Partner name" /></div>
+                  <div className="partners-slider__slide swiper-slide"><Image width="480" height="128" className="partners-slider__img" src="/img/img__partner-logo.png" alt="Partner name" /></div>
+                  <div className="partners-slider__slide swiper-slide"><Image width="480" height="128" className="partners-slider__img" src="/img/img__partner-logo.png" alt="Partner name" /></div>
                 </div>
                 <div className="partners-slider__button-prev swiper-button-prev"><svg className="partners-slider__icon svg">
                     <use xlinkHref="/img/svgSprite.svg#icon__shevron_left"></use>

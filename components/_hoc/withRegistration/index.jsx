@@ -1,5 +1,6 @@
 import React from 'react';
 import { api_query } from '../../../api';
+import 'react-datepicker/dist/react-datepicker.css'
 
 const withRegistration = WrappedComponent => {
 	return class extends React.PureComponent {
@@ -171,9 +172,13 @@ const withRegistration = WrappedComponent => {
       }
     }
 
-    setEntity = async (key, value) => {
+    setEntity = async (key, value, isNumber) => {
       if (['charter', 'director_appointment_protocol', 'director_passport'].includes(key)) {
         value = [value];
+      }
+
+      if (isNumber) {
+        value = value.replace(/[^0-9]/gi, '');
       }
 
       this.setState(prevState => ({
@@ -185,9 +190,13 @@ const withRegistration = WrappedComponent => {
       }));
     }
 
-    setEntrepreneur = async (key, value) => {
+    setEntrepreneur = async (key, value, isNumber) => {
       if (key === 'passport') {
         value = [value];
+      }
+
+      if (isNumber) {
+        value = value.replace(/[^0-9]/gi, '');
       }
 
       this.setState(prevState => ({
@@ -199,9 +208,13 @@ const withRegistration = WrappedComponent => {
       }));
     }
 
-    setSelfemployed = async (key, value) => {
+    setSelfemployed = async (key, value, isNumber) => {
       if (['passport_main_spread', 'passport_current_registration', 'snils_image'].includes(key)) {
         value = [value];
+      }
+
+      if (isNumber) {
+        value = value.replace(/[^0-9]/gi, '');
       }
 
       this.setState(prevState => ({

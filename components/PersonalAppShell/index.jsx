@@ -29,8 +29,6 @@ class PersonalAppShell extends React.PureComponent {
         <link rel="icon" href="/assets/media/logos/favicon.ico" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
-        {/* <script src="/assets/plugins/global/plugins.bundle.js"></script>
-        <script src="/assets/js/scripts.bundle.js"></script> */}
       </Head>
 
       <HeaderMobile />

@@ -11,6 +11,7 @@ const ClientsPage = () => {
     type: 0,
     operators: []
   });
+  const [organizationTypes, setOrganizationTypes] = useState([]);
   const [regions, setRegions] = useState([
     {id: 1, name: 'Республика Татарстан'},
     {id: 2, name: 'Московская область'},
@@ -66,6 +67,8 @@ const ClientsPage = () => {
   };
 
   useEffect(() => {
+    const token_api = JSON.parse(localStorage.getItem('user')).auth.token;
+
     api_query.post('/user/types')
     .then(res => {
       const { success, types } = res.data;
@@ -75,9 +78,19 @@ const ClientsPage = () => {
       }
     });
 
+    api_query.post('/user/client_organization_types')
+    .then(res => {
+      const { success, client_organization_types } = res.data;
+
+      if (success) {
+        setOrganizationTypes(client_organization_types);
+      }
+    });
+
     api_query.post('/user/list', {
+      token_api,
       page: 1,
-      type: [5, 6, 7]
+      clients: 1
     })
     .then(res => {
       const { success, data } = res.data;
@@ -91,6 +104,8 @@ const ClientsPage = () => {
       }
     });
   }, []);
+  console.log(organizationTypes)
+  console.log(clientsData)
 
 	return (
     <AppWrapper title="Мои клиенты" personal>
@@ -180,7 +195,7 @@ const ClientsPage = () => {
                         </tr>
                       </thead>
                       <tbody className="datatable-body">
-                        {clientsData.length && clientsData.map((el, i) =>
+                        {clientsData.length ? clientsData.map((el, i) =>
                           <tr data-row={i} className="datatable-row" style={{left: 0}} key={i}>
                             <td data-field="RecordID" aria-label={el.id} className="datatable-cell">
                               <span style={{width: '20px'}}>{el.id}</span>
@@ -188,8 +203,8 @@ const ClientsPage = () => {
                             <td data-field="regDate" aria-label={Intl.DateTimeFormat('ru-Ru').format(new Date(el.created_at))} className="datatable-cell">
                               <span style={{width: '112px'}}><span>{Intl.DateTimeFormat('ru-Ru').format(new Date(el.created_at))}</span><div>{Intl.DateTimeFormat('ru-Ru', {hour: 'numeric',minute: 'numeric'}).format(new Date(el.created_at))}</div></span>
                             </td>
-                            <td data-field="Org" aria-label="ОАО АльбаСтрим" className="datatable-cell">
-                              <span style={{width: '112px'}}><span className="d-block font-weight-bolder">ОАО АльбаСтрим</span><span className="font-size-sm">ИНН: 123456789013</span></span>
+                            <td data-field="Org" aria-label={`${organizationTypes.filter(e => e.id === el.user_client_organization_type_id)[0].name} АльбаСтрим`} className="datatable-cell">
+                              <span style={{width: '112px'}}><span className="d-block font-weight-bolder">{organizationTypes.filter(e => e.id === el.user_client_organization_type_id)[0].name} АльбаСтрим</span><span className="font-size-sm">ИНН: 123456789013</span></span>
                             </td>
                             <td data-field="regionTime" aria-label="null" className="datatable-cell">
                               <span style={{width: '112px'}}><span className="d-block font-weight-bolder">Московская область</span><span className="font-size-sm">12:03</span></span>
@@ -246,7 +261,7 @@ const ClientsPage = () => {
                               </span>
                             </td>
                           </tr>
-                        )}
+                        ) : null}
                       </tbody>
                     </table>
                     <div className="datatable-pager datatable-paging-loaded">
@@ -302,7 +317,7 @@ const ClientsPage = () => {
                           </div>
                         </div>
                       </div> */}
-                      <span className="datatable-pager-detail">Показано 1 - {clientsData.length} из {clientsData.length}</span>
+                      <span className="datatable-pager-detail">Показано {clientsData.length ? (pages.current * clientsData.length - clientsData.length + 1) : 0} - {clientsData.length} из {clientsData.length}</span>
                       </div>
                     </div>
                   </div>
