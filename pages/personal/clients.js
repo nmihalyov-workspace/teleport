@@ -29,9 +29,9 @@ const ClientsPage = () => {
     {id: 4, name: 'Кабанова Капитолина Агафоновна'}
   ]);
   const [clients, setClients] = useState({
-    total: 11,
-    verified: 8,
-    issued: 2
+    total: 0,
+    verified: 0,
+    issued: 0
   });
   const [clientsData, setClientsData] = useState([]);
   const [pages, setPages] = useState({
@@ -90,13 +90,19 @@ const ClientsPage = () => {
     api_query.post('/user/list', {
       token_api,
       page: 1,
-      clients: 1
+      agents: 1,
+      type: [5, 6, 7]
     })
     .then(res => {
       const { success, data } = res.data;
+      console.log('clients: ', res.data)
 
       if (success) {
         setClientsData(data.users);
+        setClients({
+          ...clients,
+          total: data.total
+        });
         setPages({
           current: pages.current,
           total: data.pages
@@ -104,8 +110,6 @@ const ClientsPage = () => {
       }
     });
   }, []);
-  console.log(organizationTypes)
-  console.log(clientsData)
 
 	return (
     <AppWrapper title="Мои клиенты" personal>
@@ -203,8 +207,8 @@ const ClientsPage = () => {
                             <td data-field="regDate" aria-label={Intl.DateTimeFormat('ru-Ru').format(new Date(el.created_at))} className="datatable-cell">
                               <span style={{width: '112px'}}><span>{Intl.DateTimeFormat('ru-Ru').format(new Date(el.created_at))}</span><div>{Intl.DateTimeFormat('ru-Ru', {hour: 'numeric',minute: 'numeric'}).format(new Date(el.created_at))}</div></span>
                             </td>
-                            <td data-field="Org" aria-label={`${organizationTypes.filter(e => e.id === el.user_client_organization_type_id)[0].name} АльбаСтрим`} className="datatable-cell">
-                              <span style={{width: '112px'}}><span className="d-block font-weight-bolder">{organizationTypes.filter(e => e.id === el.user_client_organization_type_id)[0].name} АльбаСтрим</span><span className="font-size-sm">ИНН: 123456789013</span></span>
+                            <td data-field="Org" aria-label={`${el.user_client_organization_type.name} ${el.client_organization.name}`} className="datatable-cell">
+                              <span style={{width: '112px'}}><span className="d-block font-weight-bolder">{el.user_client_organization_type.name} {el.client_organization.name}</span><span className="font-size-sm">ИНН: {el.client_organization.inn}</span></span>
                             </td>
                             <td data-field="regionTime" aria-label="null" className="datatable-cell">
                               <span style={{width: '112px'}}><span className="d-block font-weight-bolder">Московская область</span><span className="font-size-sm">12:03</span></span>

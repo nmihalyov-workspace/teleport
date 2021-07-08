@@ -97,6 +97,7 @@ const withPersonalPopups = WrappedComponent => {
 
       const token_api = JSON.parse(localStorage.getItem('user')).auth.token;
       const { data, isValid } = this.formData(this.state.newClient);
+      data.token_api = token_api;
 
       if (isValid) {
         api_query.post('/user/register_client', data).then(res => {

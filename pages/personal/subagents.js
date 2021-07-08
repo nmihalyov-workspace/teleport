@@ -29,6 +29,7 @@ const SubagentsPage = ({ user }) => {
     api_query.post('/user/list', {
       token_api,
       agents: 1,
+      type: [1, 2, 3, 4],
       page: 1
     })
     .then(res => {
