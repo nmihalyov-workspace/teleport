@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import withUserData from '../_hoc/withUserData';
 
@@ -16,7 +16,7 @@ const Header = ({ user }) => {
           <div id="kt_header_menu" className="header-menu header-menu-mobile header-menu-layout-default">
             <ul className="menu-nav m-5">
               <li className="menu-item">
-                <Link href="/personal/requests/edit"><a className="btn btn-light-primary">Новая заявка</a></Link>
+                <Link href="/personal/requests/edit?add=true"><a className="btn btn-light-primary">Новая заявка</a></Link>
               </li>
               <li className="menu-item mt-4 mt-md-0">
                 <Link href="#"><a className="btn btn-light-warning">Калькулятор</a></Link>

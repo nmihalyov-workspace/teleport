@@ -1,20 +1,41 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
+import Link from 'next/link';
 import { api_query } from '../../../api';
 import classNames from 'classnames';
+import DatePicker from "react-datepicker";
+import countDays from '../../../helpers/countDays';
+
+import 'react-datepicker/dist/react-datepicker.css'
 
 import AppWrapper from '../../../components/AppWrapper';
 
-class RequestsPage extends React.PureComponent {
+class RequestsPage extends React.Component {
   state = {
+    filter: {
+      inn: '',
+      bid: undefined,
+      purchase: '',
+      date_from: '',
+      date_to: '',
+      sum_from: undefined,
+      sum_to: undefined,
+      operator: []  
+    },
     pages: {
       current: 1,
       total: 1
     },
+    operators: [],
     requests: []
   }
 
   componentDidMount() {
-    api_query.post('/bid/list', {page: 1})
+    const token_api = JSON.parse(localStorage.getItem('user')).auth.token;
+
+    api_query.post('/bid/list', {
+      token_api,
+      page: 1
+    })
     .then(res => {
       const { success, data } = res.data;
 
@@ -25,20 +46,87 @@ class RequestsPage extends React.PureComponent {
         }));
       }
     });
+
+    api_query.post('/user/list', {
+      token_api,
+      agents: 1,
+      type: [1, 2, 3, 4],
+      page: 1
+    })
+    .then(res => {
+      const { success, data } = res.data;
+
+      if (success) {
+        this.setState(prevState => ({
+          ...prevState,
+          operators: data.users
+        }));
+      }
+    });
   }
 
-  countDays = (start, end) => {
-    const oneDay = 24 * 60 * 60 * 1000;
+  formData = inputData => {
+    const data = Object.assign({}, inputData);
 
-    start = new Date(start);
-    end = new Date(end);
+    Object.keys(data).map(el => {
+      if (['date_from', 'date_to'].includes(el) && data[el]) {
+        const date = new Date(data[el]);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+        const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+        data[el] = `${year}-${month}-${day}`;
+      }
+      if (!data[el] || (Array.isArray(data[el])) && data[el].length === 0) delete data[el];
+    });
 
-    return Math.round(Math.abs((start - end) / oneDay));
+    return data;
+  }
+
+  setFilter = (key, target, isNumber) => {
+    let value;
+
+    if (key === 'operators') {
+      value = Array.from(target.selectedOptions, option => +option.value);
+    } else if (isNumber) {
+      value = target.value.replace(/[^0-9]/gi, '');
+    } else if (['date_from', 'date_to'].includes(key)) {
+      value = target;
+    } else {
+      value = target.value;
+    }
+
+    this.setState(prevState => ({
+      ...prevState,
+      filter: {
+        ...prevState.filter,
+        [key]: value
+      }
+    }), () => {
+      const token_api = JSON.parse(localStorage.getItem('user')).auth.token;
+      const filterData = this.formData(this.state.filter);
+
+      api_query.post('/bid/list', {
+        token_api,
+        page: 1,
+        filter: filterData
+      })
+      .then(res => {
+        const { success, data } = res.data;
+  
+        if (success) {
+          this.setState(prevState => ({
+            ...prevState,
+            requests: data.bids
+          }));
+        }
+      });
+    });
   }
 
   render() {
-    const { pages, requests } = this.state;
-    const { countDays } = this;
+    const { operators, filter, pages, requests } = this.state;
+    const { setFilter } = this;
+    const CustomDateInput = forwardRef(({ value, onClick }, ref) => <input className="form-control" onClick={onClick} ref={ref} value={value} style={{width: '120px'}} />);
 
     return (
       <AppWrapper title="Мои заявки" personal>
@@ -51,31 +139,43 @@ class RequestsPage extends React.PureComponent {
                     <div className="card-title">
                       <h3 className="card-label font-weight-bolder font-size-h4 text-dark-75">Мои заявки</h3>
                     </div>
-                    <div className="card-toolbar"><button className="btn btn-sm btn-success font-weight-bold" type="button" data-toggle="modal" data-target="#addRequest">Добавить</button></div>
+                    <div className="card-toolbar">
+                      <Link href="/personal/requests/edit?add=true"><a className="btn btn-sm btn-success font-weight-bold">Добавить</a></Link>
+                    </div>
                   </div>
                   <div className="card-body">
                     <form className="mb-15">
                       <div className="row mb-6">
-                        <div className="col-md-6 col-xl-4 mb-xl-0 mb-6"><label htmlFor="kt_reviewsTable_search_client">ИНН или название клиента</label><input className="form-control" id="kt_reviewsTable_search_client" type="text"/></div>
-                        <div className="col-md-6 col-xl-4 mb-md-0 mb-6"><label>№ заявки</label><input className="form-control datatable-input" id="kt_reviewsTable_search_number" type="text"/></div>
-                        <div className="col-md-6 col-xl-4 mb-xl-0 mb-6"><label>№ закупки</label><input className="form-control datatable-input" id="kt_reviewsTable_search_purchase_num" type="text"/></div>
+                        <div className="col-md-6 col-xl-4 mb-xl-0 mb-6"><label htmlFor="kt_reviewsTable_search_client">ИНН или название клиента</label><input className="form-control" id="kt_reviewsTable_search_client" type="text" onChange={e => setFilter('inn', e.target)} value={filter.inn} /></div>
+                        <div className="col-md-6 col-xl-4 mb-md-0 mb-6"><label>№ заявки</label><input className="form-control datatable-input" id="kt_reviewsTable_search_number" type="text" onChange={e => setFilter('bid', e.target, true)} value={filter.bid} /></div>
+                        <div className="col-md-6 col-xl-4 mb-xl-0 mb-6"><label>№ закупки</label><input className="form-control datatable-input" id="kt_reviewsTable_search_purchase_num" type="text" onChange={e => setFilter('purchase', e.target)} value={filter.purchase} /></div>
                       </div>
                       <div className="row mb-6">
                         <div className="col-md-6 col-xl-4 mb-md-0 mb-6"><label>Дата</label>
-                          <div className="input-group" id="requests-date"><input className="form-control" type="date" name="start"/>
-                            <div className="input-group-append"><span className="input-group-text"><i className="la la-ellipsis-h"></i></span></div><input className="form-control" type="date" name="end"/>
+                          <div className="input-group" id="requests-date">
+                            <DatePicker
+                              selected={filter.date_from}
+                              onChange={date => setFilter('date_from', date)}
+                              dateFormat="dd.MM.yyyy"
+                              customInput={<CustomDateInput />} />
+                            <div className="input-group-append"><span className="input-group-text"><i className="la la-ellipsis-h"></i></span></div>
+                            <DatePicker
+                              selected={filter.date_to}
+                              onChange={date => setFilter('date_to', date)}
+                              dateFormat="dd.MM.yyyy"
+                              customInput={<CustomDateInput />} />
                           </div>
                         </div>
                         <div className="col-md-6 col-xl-4 mb-md-0 mb-6"><label>Сумма</label>
-                          <div className="input-group"><input className="input-sum form-control" type="text" name="from"/>
-                            <div className="input-group-append"><span className="input-group-text">₽</span></div><input className="input-sum form-control" type="text" name="to"/>
+                          <div className="input-group"><input className="input-sum form-control" type="text" name="from" onChange={e => setFilter('sum_from', e.target, true)} value={filter.sum_from}/>
+                            <div className="input-group-append"><span className="input-group-text">₽</span></div><input className="input-sum form-control" type="text" name="to" onChange={e => setFilter('sum_to', e.target, true)} value={filter.sum_to} />
                           </div>
                         </div>
                         <div className="col-md-6 col-xl-4 mb-md-0 mb-6"><label>Оператор</label><select className="form-control selectpicker" id="requestsEmployees" multiple="multiple" data-actions-box="true" data-size="5" data-live-search="true">
-                            <option value="Белозёрова Венера Викторовна">Белозёрова Венера Викторовна</option>
-                            <option value="Ковалёва Илона Константиновна">Ковалёва Илона Константиновна</option>
-                            <option value="Романова Цветана Платоновна">Романова Цветана Платоновна</option>
-                          </select></div>
+                          {operators.map(el =>
+                            <option key={el.id} value={el.id}>{el.name}</option>
+                          )}
+                        </select></div>
                       </div>
                       <div className="row mb-6">
                         <div className="col-12 mb-xl-0 mb-6"><label>Статус</label>
@@ -121,7 +221,7 @@ class RequestsPage extends React.PureComponent {
                           </tr>
                         </thead>
                         <tbody className="datatable-body">
-                          {requests.length && requests.map((el, i) =>
+                          {requests.length ? requests.map((el, i) =>
                             <tr data-row="0" className="datatable-row" style={{left: '0px'}} key={i}>
                               <td className="datatable-cell datatable-toggle-detail">
                                 <a className="datatable-toggle-detail" href="javascript:">
@@ -191,10 +291,12 @@ class RequestsPage extends React.PureComponent {
                                     <div className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
                                       <ul className="navi flex-column navi-hover py-2">
                                         <li className="navi-item">
-                                          <a href="#" className="navi-link">
-                                            <span className="navi-icon"><i className="la la-door-open text-primary"></i></span>
-                                            <span className="navi-text">Открыть</span>
-                                          </a>
+                                          <Link href={`/personal/requests/edit?id=${el.id}`}>
+                                            <a href="#" className="navi-link">
+                                              <span className="navi-icon"><i className="la la-door-open text-primary"></i></span>
+                                              <span className="navi-text">Открыть</span>
+                                            </a>
+                                          </Link>
                                         </li>
                                         <li className="navi-item">
                                           <a href="/17.html#price-management" className="navi-link">
@@ -214,7 +316,7 @@ class RequestsPage extends React.PureComponent {
                                 </span>
                               </td>
                             </tr>
-                          )}
+                          ) : null}
                         </tbody>
                       </table>
                       <div className="datatable-pager datatable-paging-loaded">
@@ -270,7 +372,7 @@ class RequestsPage extends React.PureComponent {
                             </div>
                           </div>
                         </div> */}
-                        <span className="datatable-pager-detail">Показано 1 - {requests.length} из {requests.length}</span>
+                        <span className="datatable-pager-detail">Показано {requests.length ? (pages.current * requests.length - requests.length + 1) : 0} - {requests.length} из {requests.length}</span>
                         </div>
                       </div>
                     </div>

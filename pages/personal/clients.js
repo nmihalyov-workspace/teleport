@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useDispatch } from 'react-redux';
 import { api_query } from '../../api';
 import classNames from 'classnames';
 
+import { setData } from '../../store/clientCard';
 import AppWrapper from '../../components/AppWrapper';
 
 const ClientsPage = () => {
+  const dispatch = useDispatch();
   const [filters, _setFilters] = useState({
-    inn_name: '',
-    region: 0,
+    inn: '',
+    region: '',
     type: 0,
     operators: []
   });
-  const [organizationTypes, setOrganizationTypes] = useState([]);
   const [regions, setRegions] = useState([
     {id: 1, name: 'Республика Татарстан'},
     {id: 2, name: 'Московская область'},
@@ -39,13 +42,13 @@ const ClientsPage = () => {
     total: 1
   });
 
-  const setFilters = (key, target, toNumber) => {
+  const setFilters = (key, target, isNumber) => {
     let value;
 
     if (key === 'operators') {
       value = Array.from(target.selectedOptions, option => +option.value);
-    } else if (toNumber) {
-      value = +target.value;
+    } else if (isNumber) {
+      value = target.value.replace(/[^0-9]/gi, '');
     } else {
       value = target.value;
     }
@@ -59,16 +62,14 @@ const ClientsPage = () => {
   const clearFilters = () => {
     window.$('.bs-deselect-all').click();
     _setFilters({
-      inn_name: '',
-      region: 0,
+      inn: '',
+      region: '',
       type: 0,
       operators: []
     })
   };
 
   useEffect(() => {
-    const token_api = JSON.parse(localStorage.getItem('user')).auth.token;
-
     api_query.post('/user/types')
     .then(res => {
       const { success, types } = res.data;
@@ -77,25 +78,27 @@ const ClientsPage = () => {
         setTypes(types);
       }
     });
+  }, []);
 
-    api_query.post('/user/client_organization_types')
-    .then(res => {
-      const { success, client_organization_types } = res.data;
-
-      if (success) {
-        setOrganizationTypes(client_organization_types);
-      }
-    });
-
-    api_query.post('/user/list', {
-      token_api,
+  useEffect(() => {
+    const options = {
+      token_api: JSON.parse(localStorage.getItem('user')).auth.token,
       page: 1,
       agents: 1,
       type: [5, 6, 7]
-    })
+    };
+
+    if (filters.inn.length) {
+      options.inn = filters.inn;
+    }
+
+    if (filters.region.length) {
+      options.region = filters.region;
+    }
+
+    api_query.post('/user/list', options)
     .then(res => {
       const { success, data } = res.data;
-      console.log('clients: ', res.data)
 
       if (success) {
         setClientsData(data.users);
@@ -106,10 +109,10 @@ const ClientsPage = () => {
         setPages({
           current: pages.current,
           total: data.pages
-        })
+        });
       }
     });
-  }, []);
+  }, [filters]);
 
 	return (
     <AppWrapper title="Мои клиенты" personal>
@@ -128,13 +131,8 @@ const ClientsPage = () => {
                 <div className="card-body">
                   <form className="mb-15">
                     <div className="row mb-6">
-                      <div className="col-md-6 col-xl-4 mb-md-0 mb-6"><label htmlFor="kt_clientsTable_search_query">ИНН или название клиента</label><input className="form-control" id="kt_clientsTable_search_query" type="text" value={filters.inn_name} onChange={e => setFilters('inn_name', e.target)} /></div>
-                      <div className="col-md-6 col-xl-4 mb-md-0 mb-6"><label htmlFor="regionClient">Регион клиента</label><select className="form-control" id="regionClient" onChange={e => setFilters('region', e.target, true)} value={filters.region}>
-                          <option value="">выберите регион</option>
-                          {regions.map(el =>
-                            <option key={el.id} value={el.id}>{el.name}</option>
-                          )}
-                        </select></div>
+                      <div className="col-md-6 col-xl-4 mb-md-0 mb-6"><label htmlFor="kt_clientsTable_search_query">ИНН или название клиента</label><input className="form-control" id="kt_clientsTable_search_query" type="text" value={filters.inn} onChange={e => setFilters('inn', e.target)} /></div>
+                      <div className="col-md-6 col-xl-4 mb-md-0 mb-6"><label htmlFor="regionClient">Регион клиента</label><input className="form-control" id="regionClient" type="text" onChange={e => setFilters('region', e.target)} value={filters.region} /></div>
                       <div className="col-md-6 col-xl-4 mb-md-0 mb-6"><label htmlFor="kt_clientsTable_search_type">Тип клиента</label><select className="form-control" id="kt_clientsTable_search_type" onChange={e => setFilters('type', e.target, true)} value={filters.type}>
                           <option value="">выберите тип</option>
                           {types.map(el => {
@@ -207,8 +205,8 @@ const ClientsPage = () => {
                             <td data-field="regDate" aria-label={Intl.DateTimeFormat('ru-Ru').format(new Date(el.created_at))} className="datatable-cell">
                               <span style={{width: '112px'}}><span>{Intl.DateTimeFormat('ru-Ru').format(new Date(el.created_at))}</span><div>{Intl.DateTimeFormat('ru-Ru', {hour: 'numeric',minute: 'numeric'}).format(new Date(el.created_at))}</div></span>
                             </td>
-                            <td data-field="Org" aria-label={`${el.user_client_organization_type.name} ${el.client_organization.name}`} className="datatable-cell">
-                              <span style={{width: '112px'}}><span className="d-block font-weight-bolder">{el.user_client_organization_type.name} {el.client_organization.name}</span><span className="font-size-sm">ИНН: {el.client_organization.inn}</span></span>
+                            <td data-field="Org" aria-label={`${el.client_organization.user_client_organization_type} ${el.client_organization.name}`} className="datatable-cell">
+                              <span style={{width: '112px'}}><span className="d-block font-weight-bolder">{el.client_organization.user_client_organization_type} {el.client_organization.name}</span><span className="font-size-sm">ИНН: {el.client_organization.inn}</span></span>
                             </td>
                             <td data-field="regionTime" aria-label="null" className="datatable-cell">
                               <span style={{width: '112px'}}><span className="d-block font-weight-bolder">Московская область</span><span className="font-size-sm">12:03</span></span>
@@ -230,7 +228,7 @@ const ClientsPage = () => {
                                   <div className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
                                     <ul className="navi flex-column navi-hover py-2">
                                       <li className="navi-item">
-                                        <a href="#" className="navi-link" data-toggle="modal" data-target="#openModal">
+                                        <a href="#" className="navi-link" data-toggle="modal" data-target="#openModal" onClick={() => {dispatch(setData(el))}}>
                                           <span className="navi-icon"><i className="la la-window-maximize text-primary"></i></span>
                                           <span className="navi-text">Открыть</span>
                                         </a>
@@ -242,10 +240,12 @@ const ClientsPage = () => {
                                         </a>
                                       </li>
                                       <li className="navi-item">
-                                        <a href="#" className="navi-link">
-                                          <span className="navi-icon"><i className="la la-edit text-warning"></i></span>
-                                          <span className="navi-text">Создать заявку</span>
-                                        </a>
+                                        <Link href={`/personal/requests/edit?add=true&client=${el.id}`}>
+                                          <a className="navi-link">
+                                            <span className="navi-icon"><i className="la la-edit text-warning"></i></span>
+                                            <span className="navi-text">Создать заявку</span>
+                                          </a>
+                                        </Link>
                                       </li>
                                       <li className="navi-item">
                                         <a href="#" className="navi-link" data-toggle="modal" data-target="#comment">

@@ -1,4 +1,5 @@
 import React from 'react';
+import Router from 'next/router';
 import closePersonalPopup from '../../../helpers/closePersonalPopup';
 import { api_query } from '../../../api';
 
@@ -7,8 +8,6 @@ const defaultState = {
     email: '',
     full_name: '',
     phone: '',
-    client_organization_types: [],
-    user_client_organization_type_id: 0,
     inn: ''
   },
   newUser: {
@@ -20,6 +19,19 @@ const defaultState = {
     password: '',
     credentials: [],
     user_credential: 0     
+  },
+  newSubagent: {
+    inn: '',
+    full_name: '',
+    phone: '',
+    email: '',
+    password: ''
+
+  },
+  changePassword : {
+    old_password: '',
+    new_password: '',
+    repeat_password: ''
   }
 };
 
@@ -37,22 +49,7 @@ const withPersonalPopups = WrappedComponent => {
             ...prevState,
             newUser: {
               ...prevState.newUser,
-              credentials
-            }
-          }));
-        }
-      });
-
-      api_query.post('/user/client_organization_types')
-      .then(res => {
-        const { success, client_organization_types } = res.data;
-  
-        if (success) {
-          this.setState(prevState => ({
-            ...prevState,
-            newClient: {
-              ...prevState.newClient,
-              client_organization_types
+              credentials: credentials.filter(el => el.name !== 'Клиент')
             }
           }));
         }
@@ -92,6 +89,25 @@ const withPersonalPopups = WrappedComponent => {
       }));
     }
 
+    setNewSubagent = async (key, value) => {
+      this.setState(prevState => ({
+        ...prevState,
+        newSubagent: {
+          ...prevState.newSubagent,
+          [key]: value
+        }
+      }));
+    }
+
+    setChangePassword = async (key, value) => {
+      this.setState(prevState => ({
+        changePassword: {
+          ...prevState.changePassword,
+          [key]: value
+        }
+      }));
+    }
+
     addNewClient = e => {
       e.preventDefault();
 
@@ -104,10 +120,7 @@ const withPersonalPopups = WrappedComponent => {
           if (res.data.success) {
             this.setState(prevState => ({
               ...prevState,
-              newClient: {
-                ...defaultState.newClient,
-                client_organization_types: prevState.newClient.client_organization_types
-              }
+              newClient: defaultState.newClient
             }));
             closePersonalPopup();
           }
@@ -133,20 +146,69 @@ const withPersonalPopups = WrappedComponent => {
               }
             }));
             closePersonalPopup();
+            Router.reload(window.location.pathname);
+          }
+        });
+      }
+    }
+
+    addNewSubagent = e => {
+      e.preventDefault();
+
+      const token_api = JSON.parse(localStorage.getItem('user')).auth.token;
+      const { data, isValid } = this.formData(this.state.newSubagent);
+      data.token_api = token_api;
+
+      if (isValid) {
+        api_query.post('/user/register_organization_subagent', data).then(res => {
+          if (res.data.success) {
+            this.setState(prevState => ({
+              ...prevState,
+              newSubagent: {
+                ...defaultState.newSubagent
+              }
+            }));
+            closePersonalPopup();
+            Router.reload(window.location.pathname);
+          }
+        });
+      }
+    }
+
+    requestChangePassword = e => {
+      e.preventDefault();
+
+      const token_api = JSON.parse(localStorage.getItem('user')).auth.token;
+      const { data, isValid } = this.formData(this.state.changePassword);
+      data.token_api = token_api;
+
+      if (isValid && data.newPassword === data.repeatPassword) {
+        api_query.post('/user/iedit', data).then(res => {
+          if (res.data.success) {
+            this.setState({
+              changePassword: {
+                ...defaultState.changePassword
+              }
+            });
+            closePersonalPopup();
           }
         });
       }
     }
 
 		render() {
-      const { state, setNewClient, setNewUser, addNewClient, addNewUser } = this;
+      const { state, setNewClient, setNewUser, setNewSubagent, setChangePassword, addNewClient, addNewUser, addNewSubagent, requestChangePassword } = this;
 
 			return WrappedComponent ?
         <WrappedComponent
           setNewClient={setNewClient}
           setNewUser={setNewUser}
+          setNewSubagent={setNewSubagent}
+          setChangePassword={setChangePassword}
           addNewClient={addNewClient}
           addNewUser={addNewUser}
+          addNewSubagent={addNewSubagent}
+          requestChangePassword={requestChangePassword}
           state={state}
           {...this.props} /> : null;
 		}

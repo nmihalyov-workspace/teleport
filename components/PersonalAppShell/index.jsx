@@ -1,4 +1,7 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import store from '../../store';
+
 import Head from 'next/head';
 import HeaderMobile from '../HeaderMobile';
 import Sidebar from '../Sidebar';
@@ -6,7 +9,7 @@ import Header from '../Header';
 import Footer from '../Footer';
 import PersonalPopups from '../PersonalPopups';
 
-class PersonalAppShell extends React.PureComponent {
+class PersonalAppShell extends React.Component {
   componentDidMount() {
     document.body.setAttribute('class', 'body-personal quick-panel-right demo-panel-right offcanvas-right header-fixed header-mobile-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading');
   }

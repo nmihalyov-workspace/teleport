@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Router from 'next/router'
 import Link from 'next/link';
 import Hystmodal from '../Hystmodal';
+import { useSelector } from 'react-redux';
 import { api_query } from '../../api';
 
 const MainPopups = () => {
   const [loginData, setLoginData] = useState({email: '', password: ''});
+  const errorMessageData = useSelector(state => state.errorMessage.data);
+  const [errorMessage, setErrorMessage] = useState(errorMessageData || '');
 
   const login = e => {
     e.preventDefault();
@@ -38,6 +41,10 @@ const MainPopups = () => {
   };
 
   useEffect(() => {
+    setErrorMessage(errorMessageData || '');
+  }, [errorMessageData]);
+
+  useEffect(() => {
     Array.from(document.querySelectorAll('.hystmodal a.hystmodal__remove')).map(el => {
       el.addEventListener('click', e => {
         document.querySelector('.hystmodal__shadow--show').classList.remove('hystmodal__shadow--show');
@@ -48,6 +55,17 @@ const MainPopups = () => {
   }, []);
 
   return (<>
+    <Hystmodal
+      id="error"
+      title="Произошла ошибка">
+      <div className="production-popup">
+        <div className="production-popup__row">
+          <div className="production-popup__col">
+            <div className="production-popup__text">{errorMessage}</div>
+          </div>
+        </div>
+      </div>
+    </Hystmodal>
     <Hystmodal
       id="registration"
       title="Выберите способ регистрации"

@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import AppWrapper from '../../components/AppWrapper';
 import withRegistration from '../../components/_hoc/withRegistration';
 
-const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, signupEntity, signupEntrepreneur, signupSelfemployed }) => {
+const SignupAgentPage = ({ getDaData, state, setEntity, setEntrepreneur, setSelfemployed, signupEntity, signupEntrepreneur, signupSelfemployed }) => {
   const { entity, entrepreneur, selfemployed } = state;
   const CustomDateInput = forwardRef(({ value, onClick }, ref) => <input className="field__input input" onClick={onClick} ref={ref} value={value} />);
 
@@ -32,7 +32,7 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       <div className="form__row">
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">ИНН</div><input onChange={e => setEntity('inn', e.target.value, true)} value={entity.inn} className="field__input input" type="text" required="required" />
+                              <div className="field__label">ИНН</div><input onChange={e => setEntity('inn', e.target.value, true)} onBlur={e => getDaData('entity', e.target.value)} value={entity.inn} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
@@ -238,7 +238,7 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       <div className="form__row">
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">ИНН</div><input onChange={e => setEntrepreneur('inn', e.target.value, true)} value={entrepreneur.inn} className="field__input input" type="text" required="required" />
+                              <div className="field__label">ИНН</div><input onChange={e => setEntrepreneur('inn', e.target.value, true)} onBlur={e => getDaData('entrepreneur', e.target.value)} value={entrepreneur.inn} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>
@@ -459,7 +459,7 @@ const SignupAgentPage = ({ state, setEntity, setEntrepreneur, setSelfemployed, s
                       <div className="form__row">
                         <div className="form__item form__item_half">
                           <div className="field"><label className="field__inner">
-                              <div className="field__label">ИНН</div><input onChange={e => setSelfemployed('inn', e.target.value, true)} value={selfemployed.inn} className="field__input input" type="text" required="required" />
+                              <div className="field__label">ИНН</div><input onChange={e => setSelfemployed('inn', e.target.value, true)} onBlur={e => getDaData('selfemployed', e.target.value)} value={selfemployed.inn} className="field__input input" type="text" required="required" />
                             </label>
                             <div className="field__info"></div>
                           </div>

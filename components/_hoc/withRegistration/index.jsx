@@ -2,6 +2,9 @@ import React from 'react';
 import { api_query } from '../../../api';
 import 'react-datepicker/dist/react-datepicker.css'
 
+import store from '../../../store';
+import { setData } from '../../../store/errorMessage';
+
 const withRegistration = WrappedComponent => {
 	return class extends React.PureComponent {
 		state = {
@@ -190,6 +193,28 @@ const withRegistration = WrappedComponent => {
       }));
     }
 
+    getDaData = (key, value) => {
+      api_query.post('/dadata/register', {inn: value})
+      .then(res => {
+        const { success, data, error } = res.data;
+
+        if (success) {
+          data.registration_date = new Date(data.registration_date);
+          data.organization_name = data.named;
+
+          this.setState(prevState => ({
+            [key]: {
+              ...prevState.[key],
+              ...data
+            }
+          }));
+        } else {
+          store.dispatch(setData(error));
+          window.hystModal.open('#error');
+        }
+      });
+    }
+
     setEntrepreneur = async (key, value, isNumber) => {
       if (key === 'passport') {
         value = [value];
@@ -254,10 +279,11 @@ const withRegistration = WrappedComponent => {
     }
 
 		render() {
-      const { state, setEntity, setEntrepreneur, setSelfemployed, signupEntity, signupEntrepreneur, signupSelfemployed } = this;
+      const { state, setEntity, setEntrepreneur, setSelfemployed, signupEntity, signupEntrepreneur, signupSelfemployed, getDaData } = this;
 
 			return WrappedComponent ?
         <WrappedComponent
+          getDaData={getDaData}
           setEntity={setEntity}
           setEntrepreneur={setEntrepreneur}
           setSelfemployed={setSelfemployed}

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Script from 'next/script'
 import Router from 'next/router';
 import AppShell from '../AppShell';
 import PersonalAppShell from '../PersonalAppShell';
-import GlobalContext from '../../context/global';
 import { api_query } from '../../api';
 import { registerLocale, setDefaultLocale } from  "react-datepicker";
 import ru from 'date-fns/locale/ru';
@@ -11,8 +10,6 @@ registerLocale('ru', ru)
 setDefaultLocale('ru');
 
 const AppWrapper = props => {
-  const [user, setUser] = useState({});
-
   useEffect(() => {
     if (!props.personal) {
       document.querySelector('head style') && document.querySelector('head style').remove();
@@ -39,16 +36,14 @@ const AppWrapper = props => {
 
   return (<>
     <Script defer src="/assets/scripts.js" />
-    <GlobalContext.Provider value={{user, setUser}}>
-      {props.personal ?
-        <PersonalAppShell title={props.title}>
-          {props.children}
-        </PersonalAppShell> :
-        <AppShell title={props.title}>
-          {props.children}
-        </AppShell>
-      }
-    </GlobalContext.Provider>
+    {props.personal ?
+      <PersonalAppShell title={props.title}>
+        {props.children}
+      </PersonalAppShell> :
+      <AppShell title={props.title}>
+        {props.children}
+      </AppShell>
+    }
   </>);
 };
 
